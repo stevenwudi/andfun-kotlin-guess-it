@@ -68,5 +68,16 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0-rc02"
 
     // Lifecycles
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    def lifecycle_version = "2.2.0"
+    def arch_version = "2.1.0"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+
+    // Timber for Logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
 }
