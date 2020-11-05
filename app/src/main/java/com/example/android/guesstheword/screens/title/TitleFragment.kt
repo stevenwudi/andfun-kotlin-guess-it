@@ -16,20 +16,28 @@
 
 package com.example.android.guesstheword.screens.title
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.android.guesstheword.R
 import com.example.android.guesstheword.databinding.TitleFragmentBinding
+import kotlinx.android.synthetic.*
+import kotlinx.android.synthetic.main.title_fragment.*
 
 /**
  * Fragment for the starting or title screen of the app
  */
 class TitleFragment : Fragment() {
+
+    // Media player
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -40,6 +48,29 @@ class TitleFragment : Fragment() {
         binding.playGameButton.setOnClickListener {
             findNavController().navigate(TitleFragmentDirections.actionTitleToGame())
         }
+
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.happy002)
+        mediaPlayer.isLooping = true
+
+        binding.playButton.setOnClickListener{
+            mediaPlayer.start();
+        }
+        binding.pauseButton.setOnClickListener{
+            mediaPlayer.pause();
+        }
+
         return binding.root
     }
+
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayer.pause();
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mediaPlayer.start();
+    }
+
 }

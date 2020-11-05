@@ -16,6 +16,7 @@
 
 package com.example.android.guesstheword.screens.score
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +37,8 @@ class ScoreFragment : Fragment() {
 
     private lateinit var viewModel: ScoreViewModel
     private lateinit var viewModelFactory: ScoreModelViewFactory
-
+    // Media player
+    private lateinit var winMediaPlayer: MediaPlayer
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -58,6 +60,8 @@ class ScoreFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScoreViewModel::class.java)
         binding.scoreViewModel = viewModel
 
+        winMediaPlayer = MediaPlayer.create(getContext(), R.raw.happy009)
+        winMediaPlayer.start()
 
         viewModel.score.observe(this, Observer { newSocre ->
             binding.scoreText.text = newSocre.toString()
@@ -65,8 +69,9 @@ class ScoreFragment : Fragment() {
 
         viewModel.eventPlayAgain.observe(this, Observer { playAgain ->
             if(playAgain){
-                findNavController().navigate(ScoreFragmentDirections.actionRestart())
+                winMediaPlayer.stop()
                 viewModel.onPlayAgainComplete()
+                findNavController().navigate(ScoreFragmentDirections.actionRestart())
             }
         })
         return binding.root

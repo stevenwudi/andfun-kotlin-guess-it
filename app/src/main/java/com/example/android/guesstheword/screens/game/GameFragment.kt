@@ -16,6 +16,7 @@
 
 package com.example.android.guesstheword.screens.game
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -42,6 +43,7 @@ class GameFragment : Fragment() {
 
     private lateinit var binding: GameFragmentBinding
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -58,6 +60,7 @@ class GameFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         binding.gameViewModel = viewModel
         binding.lifecycleOwner = this
+
 
         viewModel.evenGameFinish.observe(this, Observer { gameFinished ->
             if (gameFinished){
@@ -83,8 +86,8 @@ class GameFragment : Fragment() {
     private fun gameFinished() {
         val currentScore = viewModel.score.value ?: 0
         val action = GameFragmentDirections.actionGameToScore(currentScore)
-        findNavController(this).navigate(action)
         viewModel.onGameFinishComplete()
+        findNavController(this).navigate(action)
     }
 
     private fun buzz(pattern: LongArray) {
