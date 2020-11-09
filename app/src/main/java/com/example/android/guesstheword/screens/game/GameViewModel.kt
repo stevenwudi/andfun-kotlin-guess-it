@@ -16,16 +16,14 @@
 
 package com.example.android.guesstheword.screens.game
 
-import android.media.MediaPlayer
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.CountDownTimer
 import android.text.format.DateUtils
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import com.example.android.guesstheword.R
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.*
 import timber.log.Timber
-import java.security.AccessController.getContext
 
 private val CORRECT_BUZZ_PATTERN = longArrayOf(100, 100, 100, 100, 100, 100)
 private val PANIC_BUZZ_PATTERN = longArrayOf(0, 200)
@@ -92,9 +90,6 @@ class GameViewModel : ViewModel(){
         resetList()
         nextWord()
         _score.value = 0
-
-        // set mediaplayer
-        //mediaPlayer = MediaPlayer.create(this, R.raw.happy002)
 
         timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND) {
 
@@ -169,7 +164,7 @@ class GameViewModel : ViewModel(){
 
     /** Methods for buttons presses **/
     fun onSkip() {
-        _score.value = (_score.value)?.minus(1)
+        //_score.value = (_score.value)?.minus(1)
         nextWord()
     }
 

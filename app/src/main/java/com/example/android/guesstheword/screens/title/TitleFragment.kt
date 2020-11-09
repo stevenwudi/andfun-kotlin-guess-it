@@ -68,6 +68,11 @@ class TitleFragment : Fragment() {
         mediaPlayer.pause();
     }
 
+    override fun onStop(){
+        super.onStop()
+        mediaPlayer.stop()
+    }
+
     override fun onResume() {
         super.onResume()
         mediaPlayer.start();

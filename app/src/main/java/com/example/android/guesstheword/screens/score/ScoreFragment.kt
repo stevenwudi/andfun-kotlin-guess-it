@@ -77,4 +77,15 @@ class ScoreFragment : Fragment() {
         return binding.root
     }
 
+    // We will pause the media play when fragment is paused
+    override fun onPause() {
+        super.onPause()
+        winMediaPlayer.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        winMediaPlayer.start()
+    }
+
 }
