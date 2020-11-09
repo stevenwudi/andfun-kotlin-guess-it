@@ -1,19 +1,3 @@
-/*
- * Copyright 2018, The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.android.guesstheword.screens.game
 
 import android.content.Context
@@ -30,7 +14,6 @@ import android.util.Half
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -61,12 +44,15 @@ class GameFragment : Fragment(), SensorEventListener {
     private val NS2S = 1.0f / 1000000000.0f
     private val deltaRotationVector = FloatArray(4) { 0f }
     private var timestamp: Float = 0f
-    private var timestampPreviousUp: Float = 0f
-    private var timestampPreviousDown: Float = 0f
-    private var timestampChanged: Float = 0f
+    private var timestampChangedPrev: Float = 0f
     private val CONST_ANGLE = 1.5F
-    private val CONST_ELAPS = 1.0f
+    private val CONST_ELAPS = .5f
     private var timeElapsed: Float = 0f
+
+    // Sound effect
+    private lateinit var mediaPlayerGotIt: MediaPlayer
+    private lateinit var mediaPlayerSkip: MediaPlayer
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -104,9 +90,11 @@ class GameFragment : Fragment(), SensorEventListener {
             }
         })
 
+        mediaPlayerSkip = MediaPlayer.create(getContext(), R.raw.skip)
+        mediaPlayerGotIt = MediaPlayer.create(getContext(), R.raw.right)
         return binding.root
-
     }
+
 
     /**
      * Called when the game is finished
@@ -168,18 +156,20 @@ class GameFragment : Fragment(), SensorEventListener {
                     deltaRotationVector[3] = cosThetaOverTwo
                 }
                 // This is a "GOT IT" action
-                if (deltaRotationVector[0] > CONST_ANGLE || deltaRotationVector[0] < -CONST_ANGLE){
-                    timeElapsed = (event.timestamp.toFloat() - timestampChanged) * NS2S
+                if (deltaRotationVector[0] > CONST_ANGLE || deltaRotationVector[0] < -CONST_ANGLE) {
+                    timeElapsed = (event.timestamp.toFloat() - timestampChangedPrev) * NS2S
                     Timber.i("Event time Since last Change: %s", timeElapsed.toString())
-                    timestampChanged = event.timestamp.toFloat()
+                    timestampChangedPrev = event.timestamp.toFloat()
 
                 }
                 if (deltaRotationVector[0] > CONST_ANGLE && timeElapsed > CONST_ELAPS) {
                     Timber.i("Got it")
+                    mediaPlayerGotIt.start()
                 }
                 // This is a "skip" action
-                else if (deltaRotationVector[0] < -CONST_ANGLE  && timeElapsed > CONST_ELAPS) {
+                else if (deltaRotationVector[0] < -CONST_ANGLE && timeElapsed > CONST_ELAPS) {
                     Timber.i("skip")
+                    mediaPlayerSkip.start()
                 }
                 timestamp = event?.timestamp?.toFloat() ?: 0f
 
