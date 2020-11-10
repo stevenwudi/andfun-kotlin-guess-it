@@ -16,6 +16,7 @@
 
 package com.example.android.guesstheword.screens.game
 
+import android.app.Application
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
@@ -30,8 +31,7 @@ private val PANIC_BUZZ_PATTERN = longArrayOf(0, 200)
 private val GAME_OVER_BUZZ_PATTERN = longArrayOf(0, 2000)
 private val NO_BUZZ_PATTERN = longArrayOf(0)
 
-class GameViewModel : ViewModel(){
-
+class GameViewModel(app: Application) : AndroidViewModel(app){
     // Buzzer
     enum class BuzzType(val pattern: LongArray){
         CORRECT(CORRECT_BUZZ_PATTERN),

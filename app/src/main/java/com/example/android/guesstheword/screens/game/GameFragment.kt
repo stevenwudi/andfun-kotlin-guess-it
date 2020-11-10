@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.example.android.guesstheword.R
 import com.example.android.guesstheword.databinding.GameFragmentBinding
+import com.example.android.guesstheword.screens.score.ScoreModelViewFactory
+import com.example.android.guesstheword.screens.score.ScoreViewModel
 import timber.log.Timber
 import kotlin.math.cos
 import kotlin.math.sin
@@ -32,7 +34,9 @@ import kotlin.math.sqrt
  */
 class GameFragment : Fragment(), SensorEventListener {
 
+    //private lateinit var viewModel: GameViewModel
     private lateinit var viewModel: GameViewModel
+    private lateinit var viewModelFactory: GameViewModelFactory
 
     private lateinit var binding: GameFragmentBinding
 
@@ -71,19 +75,22 @@ class GameFragment : Fragment(), SensorEventListener {
 
         // take the binding with view model
         Timber.i("Called ViewModelProviders")
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        val application = requireNotNull(activity).application
+        viewModelFactory = GameViewModelFactory(application)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(GameViewModel::class.java)
+
         binding.gameViewModel = viewModel
         binding.lifecycleOwner = this
 
 
-        viewModel.evenGameFinish.observe(this, Observer { gameFinished ->
+        viewModel.evenGameFinish.observe(viewLifecycleOwner, Observer { gameFinished ->
             if (gameFinished) {
                 gameFinished()
             }
         })
 
         // Buzzes when triggered with different buzz events
-        viewModel.eventBuzz.observe(this, Observer { buzzType ->
+        viewModel.eventBuzz.observe(viewLifecycleOwner, Observer { buzzType ->
             if (buzzType != GameViewModel.BuzzType.NO_BUZZ) {
                 buzz(buzzType.pattern)
                 viewModel.onBuzzComplete()
